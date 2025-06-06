@@ -21,6 +21,7 @@ there are 2 simple ways in which we can interact with files in C:
         - wb+: read and write binary, ''
     - `stdin`, `stdout`, `stderr` are all file pointers declared in C
     - file pointer operations are buffered
+        - e.g. not all data to write to the stream is written immediately, C will wait to write multiple write calls at once
 
 ### reading files
 
