@@ -71,6 +71,8 @@ the integers `pipefd[0]` and `pipefd[1]` are the file descriptors for the pipe, 
 
 we can convert the fd to a fp via `FILE *fp = fdopen(pipefd[0], "r");`
 
+---
+
 ## forking
 
 we can use `fork` to create a new child process
@@ -207,7 +209,49 @@ void thread_handler(void *arg) {
 
 #### deadlocks
 
-a deadlock is a situation in which 2 or more threads
+a deadlock is a situation in which 2 or more threads are stuck waiting trying to access a shared resource held by another, creating a cyclic dependency
+
+a deadlock requires:
+
+- a hold and wait
+- a mutual exclusion
+- a circular wait
+- no pre-emption
+
+this is especially prone to happen as we cannot determine the execution order of threads
+
+#### semaphores
+
+a **semaphore** is a construct that allows you to control the number of threads that have access to the shared resource
+
+we can use semaphores for threads as such:
+```c
+sem_t *sem;
+
+void *thread_handler(void *arg) {
+    sem_wait(&sem); // wait, decrement the semaphore
+
+    // ... critical section logic
+
+    sem_post(&sem) // signal, increment the semaphore
+}
+
+int main() {
+    sem_init(&sem, 0, 1); // set the value of 1, shared between threads of the same process (pshared = 0)
+
+    sem_destroy(&sem);
+}
+```
+
+---
+
+## limits of parallelisation
+
+**amdahl's law** gives limits on the maximum possible speedup of programs
+
+$$
+overall speedup = \frac{old execution time}{new execution time} = \frac{1}{[(1-fraction_{enhanced}) + \frac{fraction_{enhanced}}{speedup_{enhanced}}]}
+$$
 
 ---
 

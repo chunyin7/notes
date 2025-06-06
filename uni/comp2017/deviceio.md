@@ -125,3 +125,31 @@ this approach is not very scalable, as the kernel must linearly scan all file de
 ---
 
 ## fifos (named pipes)
+
+a **fifo special file** in unix systems, is a kernel object that can be opened for reading/writing, but behavies like a pipe
+
+we can use fifos to communicate between individual processes
+
+e.g.
+```c
+#define FIFO_PATH "my_fifo"
+if (mkfifo(FIFO_PATH, 0666) == -1) {
+    perror("fifo");
+    // maybe it exists; ignore or handle
+}
+
+// to write to the fifo
+int fd = open(FIFO_PATH, O_WRONLY); // this blocks until a reader opens it
+char *msg = "Hello\n";
+write(fd, msg, sizeof(char) * strlen(msg));
+
+close(fd); // close the fifo, this sends eof from the write end
+
+// to read from the fifo
+int fd = open(FIFO_PATH, O_RDONLY); // this blocks until a reader opens it
+char buf[128];
+ssize_t n = read(fd, buf, sizeof(buf)-1);
+buf[n] = '\0' // null terminate the message
+
+close(fd);
+```
