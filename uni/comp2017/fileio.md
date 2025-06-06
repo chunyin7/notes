@@ -1,6 +1,29 @@
-# FILEIO IN C
+# fileio in c
 
-## STDIO
+## reading and writing from files
+
+there are 2 simple ways in which we can interact with files in C:
+- **file descriptors**: an integer number which the OS uniquely associates with a given file
+    - stdin = 0
+    - stdout = 1
+    - stderr = 2
+- **file pointers**: we can declare a file pointer with `FILE *f = fopen(const char *path, const char *mode)`
+    - modes:
+        - r: read
+        - r+: read and write
+        - w: write, creates an empty file if file doesn't exist
+        - w+: read and write, ''
+        - a: append, '' 
+        - a+: read and append, ''
+        - rb: read binary content
+        - rb+: read and write binary
+        - wb: write binary, creates an empty file if file doesn't exist
+        - wb+: read and write binary, ''
+    - `stdin`, `stdout`, `stderr` are all file pointers declared in C
+
+---
+
+## stdio
 
 ### reading stdin:
 
