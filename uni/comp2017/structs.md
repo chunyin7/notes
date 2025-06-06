@@ -1,6 +1,6 @@
-# ADTS IN C
+# adts in c
 
-## STRUCTS
+## structs
 
 with **structs** we can declare a new 'type', which is a composite of existing types within a constant size in memory, defined at compilation
 this is somewhat adjacent to what we can achieve with classes in OOP, however, we cannot achieve *encapsulation* or *inheritance*
@@ -36,7 +36,7 @@ we can associate 'methods' with a struct using file pointers
 
 ---
 
-## ENUMS
+## enums
 
 enums allow us to map fixed names to integer values
 e.g.
@@ -47,7 +47,7 @@ enum TYPE { FIRE, WATER, FLYING, ROCK, ELECTRIC };
 
 ---
 
-## UNIONS
+## unions
 
 we can use unions to capture a type that might potentially be a range of types
 unions can be used as **one** of the multiple types listed in it

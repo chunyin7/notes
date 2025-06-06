@@ -1,6 +1,6 @@
-# C COMPILATION
+# c compilation
 
-## COMPILER PIPELINE
+## compiler pipeline
 1. **preprocessing**: the preprocessor performs text insertions/substitutions for all macros and headerfiles
 2. **compilation**: source code converted to assembly code (architecture dependent)
     - checks syntax
@@ -12,7 +12,7 @@
     - symbol resolution -> links symbols to memory
     - provides entry point for main function
 
-## VARIOUS COMPILER FLAGS
+## various compiler flags
 - **Wall**: enables a set of warning flags (not necessarily all)
 - **Werror**: treats all warnings as errors
 - **Wextra**: enables extra warnings

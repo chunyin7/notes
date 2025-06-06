@@ -1,4 +1,4 @@
-# POINTERS
+# pointers
 
 ## memory semantics
 
@@ -12,3 +12,5 @@
     - `a[i] == *(a + i)`
 
 - on x86 systems, *32-bit* vs *64-bit* refers to **the size of pointers**
+
+- we can use void pointers to mimic generics, allows us to handle memory where we don't necessarily know the type
