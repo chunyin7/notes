@@ -1,6 +1,7 @@
 # c compilation
 
 ## compiler pipeline
+
 1. **preprocessing**: the preprocessor performs text insertions/substitutions for all macros and headerfiles
 2. **compilation**: source code converted to assembly code (architecture dependent)
     - checks syntax
@@ -12,7 +13,17 @@
     - symbol resolution -> links symbols to memory
     - provides entry point for main function
 
+### multi-file linkage
+
+`extern`:
+when the *extern* keyword is used within a C source file, it notifies the compiler to link a variable or function of the same name within the global memory space
+
+`static`:
+*static* variables have file scope and internal linkage, these files are not exposed to other files
+
+
 ## various compiler flags
+
 - **Wall**: enables a set of warning flags (not necessarily all)
 - **Werror**: treats all warnings as errors
 - **Wextra**: enables extra warnings
