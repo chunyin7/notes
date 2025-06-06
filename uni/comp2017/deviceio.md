@@ -97,3 +97,31 @@ int main(void) {
     sigprocmask(SIG_SETMASK, &oldset, NULL)
 }
 ```
+
+---
+
+## epoll
+
+with an **epoll** instance, we can register various file descriptors (sockets, pipes, etc) via the kernel
+we can call `epoll_wait()`, which **blocks** until *any of the registered descriptors is ready, giving a list of 'ready' descriptors we can read/write without blocking
+
+this simplifies instances where we want to wait for several different events, using a single loop, while being highly scalable
+however, there is slight latency (usually negligible), and we are required to open descriptors in non-blocking mode and loop until they are drained
+
+---
+
+## select
+
+`select()` is part of the original *Berkeley sockets API* and waits for one or more fds to become 'ready' for reading, writing or have error conditions
+to use **select**, we build three fd_set bitmasks (read, write exception), add descriptors with `FD_SET()`, then call
+```c
+int n = select(max_fd + 1, &read_fds, &write_fds, &err_fds, &timeout);
+```
+
+after it returns, we test each set with `FD_ISSET()` to see which descriptors are ready
+
+this approach is not very scalable, as the kernel must linearly scan all file descriptors and we must rebuild and pass the full fd_set masks every time
+
+---
+
+## fifos (named pipes)

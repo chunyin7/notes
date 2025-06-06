@@ -20,6 +20,7 @@ when the *extern* keyword is used within a C source file, it notifies the compil
 
 `static`:
 *static* variables have file scope and internal linkage, these files are not exposed to other files
+a *static* variable within a function scope will ensure that the variable's memory is maintained even when the stack space is popped
 
 
 ## various compiler flags
