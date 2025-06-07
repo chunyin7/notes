@@ -15,6 +15,10 @@
 
 - we can use void pointers to mimic generics, allows us to handle memory where we don't necessarily know the type
 
+- 2 pointers are said to alias when they access the same underlying region of memory
+    - the strict aliasing rule specifies that compilers are allowed to assume that the memory will not be accessed through pointers of different types, **except `char *`**
+    - we can tell the compiler that 2 pointers won't alias via the `restrict` keyword
+
 ## function pointers
 
 function pointers allow us to use variables to hold an address to a function

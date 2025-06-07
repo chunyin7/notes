@@ -171,6 +171,8 @@ threads have their own:
 
 threads share the virtual memory of the process, which includes static memory, heap memory and program code
 
+note that `strtok` is **not** thread safe, while `strtok_r` is
+
 ### pthreads
 
 pthreads is a library specified by the posix standard, accessible via the `pthread.h` header file
@@ -242,6 +244,19 @@ int main() {
     sem_destroy(&sem);
 }
 ```
+
+#### condition variables
+
+**condition variables** are used along with conditional checks, allowing us to block and wake threads, we use:
+
+- `pthread_cond_wait(pthread_cond_t *restrict cond, pthread_mutex_t *restrict mutex)`:
+    - this function takes a reference to the condition variable and the mutex, forcing the calling thread to sleep
+    - the mutex that it had access to is atomically released, allowing another thread blocked on the same mutex to gain access
+- `pthread_cond_signal(pthread_cond_t *cond)`:
+    - randomly signals to wake one of the threads blocked by the condition variable
+    - on being woken up, a thread regains access of the mutex that was used in it's `pthread_cond_wait()`
+- `pthread_cond_broadcast(pthread_cond_t *cond)`:
+    - signals all threads blocked by the condition to be awoken
 
 ---
 
