@@ -1,5 +1,18 @@
 # trees
 
+a **tree** is a data structure of nodes, where each node has children (2 for a binary tree)
+
+in a **binary search tree**, each node has the property that the values of all nodes in its right subtree are greater than the node's value, same with less than for the left
+
+we have 2 predominant ways of traversing a tree:
+- **depth first search**
+    - *pre-order* - we process each node before moving to its children
+    - *in-order* - we traverse left before processing the node
+        - in a bst, an inorder traversal will produce elements in **ascending order**
+    - *post-order* - we traverse both left and right before processing the node
+- **breadth first search**
+    - particularly useful for level order traversal
+
 ## invert binary tree
 
 > Given the root of a binary tree, invert the tree, and return its root.
