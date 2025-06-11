@@ -29,7 +29,7 @@ class Solution:
         for i, num in enumerate(nums):
             if num in used:
                 continue
-            
+
             used.add(num)
             l = i + 1
             r = n - 1
@@ -47,7 +47,7 @@ class Solution:
                     l += 1
                     while l < r and nums[l] == nl:
                         l += 1
-        
+
         return ret
 ```
 

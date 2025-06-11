@@ -211,7 +211,7 @@ class Solution:
             visiting.add(v)
             ret = True
             for a in edges[v]:
-                if a not in visiting and a not in visited:    
+                if a not in visiting and a not in visited:
                     ret &= dfs(a)
                 elif a in visiting:
                     return False
@@ -299,4 +299,101 @@ class Solution:
                 dfs(i, None)
 
         return ret
+```
+
+---
+
+## rotting oranges
+
+> You are given an `m x n` grid where each cell can have one of three values:
+>
+> `0` representing an empty cell,
+> `1` representing a fresh orange, or
+> `2` representing a rotten orange.
+>
+> Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten.
+>
+> Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.
+
+```python
+class Solution:
+    def orangesRotting(self, grid: List[List[int]]) -> int:
+        ret = 0
+        directions = {(1, 0), (0, 1), (-1, 0), (0, -1)}
+
+        q = deque()
+
+        for row in range(len(grid)):
+            for col in range(len(grid[0])):
+                if grid[row][col] == 2:
+                    q.append((row, col, 0)) # row, col, depth
+
+        while q:
+            r, c, d = q.popleft()
+            ret = d
+
+            for dr, dc in directions:
+                nr, nc = r + dr, c + dc
+
+                if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]) and grid[nr][nc] == 1:
+                    grid[nr][nc] = 2
+                    q.append((nr, nc, d + 1))
+
+        for row in range(len(grid)):
+            for col in range(len(grid[0])):
+                if grid[row][col] == 1:
+                    return -1
+
+        return ret
+```
+
+---
+
+## course scheduling 2
+
+> There are a total of `numCourses` courses you have to take, labeled from `0` to `numCourses - 1`. You are given an array prerequisites where `prerequisites[i] = [ai, bi]` indicates that you must take course `bi` first if you want to take course `ai`.
+>
+> For example, the pair `[0, 1]`, indicates that to take course `0` you have to first take course `1`.
+>
+> Return the ordering of courses you should take to finish all courses. If there are many valid answers, return any of them. If it is impossible to finish all courses, return an empty array.
+
+- in this problem, we essentially must produce the topological sort of the graph produced by taking courses as vertices and prerequisite relationships as directed edges
+    - e.g. for any directed edge `(u, v)` in a graph, `u` must occur before `v` in the topological sort
+
+naive approach:
+
+```python
+class Solution:
+    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        p2c = {i: [] for i in range(numCourses)} # prereq -> course
+        c2p = {} # number of prereqs for course
+        ret = []
+        seen = set()
+
+        for c, p in prerequisites:
+            p2c[p].append(c)
+            c2p[c] = c2p.get(c, 0) + 1
+
+        for n in range(numCourses):
+            if n not in c2p or c2p[n] == 0:
+                # if there is no pre-requisite
+                q = deque()
+                q.append(n)
+                seen.add(n)
+
+                while q:
+                    cur = q.popleft()
+                    ret.append(cur)
+
+                    for c in p2c[cur]:
+                        if c not in seen and (c not in c2p or c2p[c] == 1):
+                            q.append(c)
+                            seen.add(c)
+                        elif c in c2p and c2p[c] > 1:
+                            c2p[c] -= 1
+
+        if len(ret) == numCourses:
+            return ret
+        else:
+            return []
 ```
