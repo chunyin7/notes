@@ -28,7 +28,8 @@ there are 2 simple ways in which we can interact with files in C:
 - `fgets(char *buf, size_t n_chars, FILE *stream)`:
     - reads number of characters from stream into character buffer
     - will read line by line
-    - returns no. of chars read, NULL if reading after EOF
+    - returns pointer to the buffer (NULL on EOF)
+    - fgets **always**, when not returning NULL appends a null terminator
 
 - `fscanf(FILE *fptr, char *formatted_str, ...addresses)`:
     - reads a line from a file as a formatted string and extracts values based on format specifiers

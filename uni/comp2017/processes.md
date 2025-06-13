@@ -121,7 +121,8 @@ we call children processes that still exist in the process table but have termin
 ## exec 
 
 the **exec** family of functions allow a process to start an executable file
-when a process calls exec, it is *replaced* in memory by the new process
+
+when a process calls exec, it is *replaced* in memory by the new process, i.e. its stack is replaced with a new stack
 
 - `execvp(const char *file, char *const argv[])`:
     - **file**: executable file we wish to execute
@@ -154,6 +155,24 @@ fread(...);
 // close
 pclose(f);
 ```
+
+---
+
+## wait
+
+the **wait** functions are defined in `<sys/wait.h>`
+
+- `wait(int *stat_loc)`:
+    - if the aprent process has multiple children, a `wait(NULL)` call will implicitly wait for any child process to terminate
+    - if a child process terminates, the PID of that child will be returned
+    - if there are no children, `-1` is returned
+
+- `watpid(pid_t child_pid, int *status, int options)`
+    - allows us more control over which child process we wish to wait for
+    - *options*:
+        - *0* means no option - parent must wait for child termination
+        - *WNOHANG* means parent does not wait if child does not terminate
+    - *stat* gives address of where child termination status should be stored
 
 ---
 
