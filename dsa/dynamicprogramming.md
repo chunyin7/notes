@@ -206,3 +206,150 @@ class Solution:
 
         return dfs("")
 ```
+
+more spacially efficient iterative index based approach:
+```python
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        dp = [False] * (len(s) + 1)
+        dp[len(s)] = True
+
+        for i in range(len(s) - 1, -1, -1):
+            for w in wordDict:
+                if (i + len(w)) <= len(s) and s[i : i + len(w)] == w:
+                    dp[i] = dp[i + len(w)]
+                if dp[i]:
+                    break
+
+        return dp[0]
+```
+
+---
+
+## longest increasing sub sequence
+
+- brute force approach
+    - dfs on decision tree of inclusion of each number
+- we can optimise by caching whether we can continue from a certain index for building subsequences
+    - at each index, we can cache the length of the longest possible subsequence starting from that index
+
+- instead of performing a dfs, we can walk through the array backwards, then check the longest increasing subsequence that starts at all indices greater than the current
+
+```python
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        dp = [1] * len(nums)
+
+        for i in range(len(nums) - 1, -1, -1):
+            for j in range(i + 1, len(nums)):
+                if nums[j] > nums[i]:
+                    dp[i] = max(dp[i], 1 + dp[j])
+
+        return max(dp)
+```
+
+- the above approach runs in $O(n^2)$ but we can optimise for $O(n\log{n})$
+- we can maintain an array, where each entry `tails[i]`, stores the smallest tail of all increasing subsequences of length `i + 1`
+- when we walk through each `num` in `nums`, we have 2 cases:
+    - `num` is greater than all elements in `tails`
+        - this means that `num` can extend the longest increasing subsequence we've found so far, so we simply append num to tails
+    - `num` is not greater than all elements in `tails`
+        - this means that `num` cannot extend the current longest subsequence, but it might be able to form a *shorter* subsequence that is potentially useful in the future, as it would be easier to extend
+        - in this case, we find the position in `tails`, where num would fit to maintain sorted order, which holds the smallest element greater than or equal to `num`, and replace that element with `num`
+
+```python
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        # 'tails' stores the smallest tail of all increasing
+        # subsequences with length i+1
+        tails = []
+
+        for num in nums:
+            if not tails or num > tails[-1]:
+                # Case 1: 'num' is greater than all elements in 'tails'.
+                # It extends the LIS, so we append it.
+                tails.append(num)
+            else:
+                # Case 2: 'num' can replace an existing element to form
+                # a more promising subsequence.
+                l, r = 0, len(tails) - 1
+
+                while l <= r:
+                    m = l + ((r - l) // 2)
+
+                    if tails[m] < num:
+                        l = m + 1
+                    else:
+                        r = m - 1
+
+                i = l
+
+                tails[i] = num
+
+        return len(tails)
+```
+
+---
+
+## partition equal subset sum
+
+> Given an integer array `nums`, return `true` if you can partition the array into two subsets such that the *sum of the elements in both subsets is equal* or `false` otherwise.
+
+- we can note that we can rephrase this problem as for a target sum (sum of all elements divided by 2), can we find distinct elements in the array that add to this target
+- brute force approach:
+    - for each number in the list, we form a decision tree of whether to include it or not in our running sum
+    - then we simply perform a dfs of this tree
+- this can be better optimised by pruning branches that are obviously impossible, i.e. the running sum exceeds the target
+- we can also cache our results at each step to optimise further
+
+```python
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        s = sum(nums)
+
+        if s % 2 != 0:
+            return False
+
+        target = s / 2
+
+        dp = {}
+
+        def dfs(a, i):
+            if (a, i) in dp:
+                return dp[(a, i)]
+            if a == target:
+                return True
+            if i == len(nums) or a > target:
+                dp[(a, i)] = False
+                return False
+
+            ret = dfs(a + nums[i], i + 1) or dfs(a, i + 1)
+
+            dp[(a, i)] = ret
+
+            return ret
+
+        return dfs(0, 0)
+```
+
+an iterative approach that is more memory efficient:
+```python
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        s = sum(nums)
+        if s % 2 != 0:
+            return False
+
+        target = s / 2
+
+        seen = {0}
+
+        for n in nums:
+            a = list(seen)
+            for s in a:
+                seen.add(n + s)
+
+        return target in seen
+```
+
+in this case, we keep a set that tracks all possible sums, then if the target is in the set, we must have `true`
