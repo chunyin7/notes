@@ -88,3 +88,66 @@ class Solution:
 
         return ret
 ```
+
+---
+
+## longest palindromic substring
+
+> Given a string `s`, return the longest *palindromic substring* in `s`.
+
+- we catch odd length and even length palindromes separately
+- we grow the palindromic substrings with a left and right pointer such that we can avoid repeatedly checking each character
+
+```python
+class Solution:
+    def longestPalindrome(self, s: str) -> str:
+        ret = ""
+
+        for i in range(len(s)):
+            # odd length
+            l, r = i, i
+            while l >= 0 and r < len(s) and s[l] == s[r]:
+                if (r - l + 1) > len(ret):
+                    ret= s[l:r+1]
+
+                l -= 1
+                r += 1
+
+            # even length
+            l, r = i, i + 1
+            while l >= 0 and r < len(s) and s[l] == s[r]:
+                if (r - l + 1) > len(ret):
+                    ret= s[l:r+1]
+                l -= 1
+
+                r += 1
+
+        return ret
+```
+
+## palindromic substrings
+
+> Given a string `s`, return the number of palindromic substrings in it.
+
+- same approach as *longest palindromic substring*
+
+```python
+class Solution:
+    def countSubstrings(self, s: str) -> int:
+        ret = 0
+
+        for i in range(len(s)):
+            l, r = i, i
+            while l >= 0 and r < len(s) and s[l] == s[r]:
+                ret += 1
+                l -= 1
+                r += 1
+
+            l, r = i, i + 1
+            while l >= 0 and r < len(s) and s[l] == s[r]:
+                ret += 1
+                l -= 1
+                r += 1
+
+        return ret
+```

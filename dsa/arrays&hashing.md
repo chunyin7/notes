@@ -71,3 +71,41 @@ class Solution:
 
         return ret
 ```
+
+---
+
+## product of array except self
+
+> Given an integer array `nums`, return an array `answer` such that `answer[i]` is equal to the product of all the elements of `nums` except `nums[i]`.
+>
+> The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+>
+> You must write an algorithm that runs in `O(n)` time and *without using the division operation*.
+
+- we can precompute the product of all elements to the left and right of a specific index
+- then the final product, is just the product of the 2 given entries of the left and right array
+
+```python
+class Solution:
+    def productExceptSelf(self, nums: List[int]) -> List[int]:
+        # compute the product of all elements before the i-th element
+        before = [1]
+        n = len(nums)
+
+        for i in range(0, n - 1):
+            before.append(nums[i] * before[i])
+
+        # compute the product of all elements after the i-th element
+        after = [0] * n
+        after[n - 1] = 1
+
+        for i in range(n - 1, 0, -1):
+            after[i - 1] = after[i] * nums[i]
+
+
+        ret = []
+        for i in range(n):
+            ret.append(before[i] * after[i])
+
+        return ret
+```

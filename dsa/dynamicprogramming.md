@@ -63,3 +63,146 @@ class Solution:
 
         return max(helper(nums[:len(nums) - 1]), helper(nums[1:]))
 ```
+
+---
+
+## decode ways
+
+> You have intercepted a secret message encoded as a string of numbers. The message is decoded via the following mapping:
+>
+> `"1" -> 'A'`
+>
+> `"2" -> 'B'`
+>
+> `...`
+>
+> `"25" -> 'Y'`
+>
+> `"26" -> 'Z'`
+>
+> However, while decoding the message, you realize that there are many different ways you can decode the message because some codes are contained in other codes ("2" and "5" vs "25").
+>
+> For example, "11106" can be decoded into:
+>
+> "AAJF" with the grouping (1, 1, 10, 6)
+> "KJF" with the grouping (11, 10, 6)
+> The grouping (1, 11, 06) is invalid because "06" is not a valid code (only "6" is valid).
+>
+> Note: there may be strings that are impossible to decode.
+>
+> Given a string s containing only digits, return the number of ways to decode it. If the entire string cannot be decoded in any valid way, return 0.
+>
+> The test cases are generated so that the answer fits in a 32-bit integer.
+
+- we can perform a decision tree dfs traversal, caching results we find at specific vertices
+- note that if we take a iterative approach, where we iterate in reverse, it is possible to optimise space by using 2 variables rather than a full cache
+
+```python
+class Solution:
+    def numDecodings(self, s: str) -> int:
+        dp = {len(s) : 1}
+
+        def dfs(i):
+            if i in dp:
+                return dp[i]
+
+            if s[i] == '0':
+                return 0
+
+            ret = dfs(i + 1)
+            if i < len(s) - 1 and ((s[i] == '1' and int(s[i + 1]) - int('0') < 10) or (s[i] == '2' and int(s[i + 1]) - int('0') < 7)):
+                ret += dfs(i + 2)
+
+            dp[i] = ret
+            return ret
+
+        return dfs(0)
+```
+
+memory optimised version:
+```python
+class Solution:
+    def numDecodings(self, s: str) -> int:
+        d1 = 1 # equivalent to dp[i + 1]
+        d2 = 0 # equiavalent to dp[i + 2]
+
+        for i in range(len(s) - 1, -1, -1):
+            new = 0
+            if s[i] != '0':
+                new = d1
+
+            if i < len(s) - 1 and ((s[i] == "1" and int(s[i + 1]) - int('0') < 10) or (s[i] == "2" and int(s[i + 1]) - int('0') < 7)):
+                new += d2
+
+            d2 = d1
+            d1 = new
+
+        return d1
+```
+
+---
+
+## maximum product subarray
+
+> Given an integer array `nums`, find a subarray that has the largest product, and return the product
+>
+> The test cases are generated so that the answer will fit in a 32-bit integer.
+
+- we can incrementally solve the problem, i.e. max prod subarray of `[1, 2, 3]`, is just 1 * the max prod subarray of `[2, 3]`
+- we can keep track of both the max and minimum product subarrays due to negative numbers causing inversions
+- when we find a 0, we want to reset our ongoing counter
+
+```python
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        ret = max(nums)
+        curMin, curMax = 1, 1
+
+        for n in nums:
+            tmp = curMax
+            curMax = max(n, curMax * n, curMin * n)
+            curMin = min(n, curMin * n, tmp * n)
+
+            ret = max(ret, curMax)
+
+        return ret
+```
+
+---
+
+## word break
+
+> Given a string `s` and a dictionary of strings `wordDict`, return `true` if `s` can be segmented into a space-separated sequence of one or more dictionary words.
+>
+> Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+- initial brute force idea:
+    - try to construct `s` using a decision tree traversal of the words in wordDict
+- then we can optimise by pruning obviously wrong results
+- optimise by caching
+
+```python
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        dp = {}
+
+        def dfs(ss):
+            if ss in dp:
+                return dp[ss]
+
+            ret = False
+            for word in wordDict:
+                new = ss + word
+                if len(new) < len(s) and new == s[:len(new)]:
+                    r = dfs(new)
+                    dp[new] = r
+
+                    if r:
+                        return True
+                elif new == s:
+                    return True
+
+            return False
+
+        return dfs("")
+```

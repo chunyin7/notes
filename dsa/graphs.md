@@ -397,3 +397,38 @@ class Solution:
         else:
             return []
 ```
+
+---
+
+## coin change
+
+> You are given an integer array `coins` representing coins of different denominations and an integer amount representing a total amount of money.
+>
+> Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return `-1`.
+>
+> You may assume that you have an infinite number of each kind of coin.
+
+- perform a path finding bfs traversal over the decision tree
+
+```python
+class Solution:
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        if amount == 0:
+            return 0
+
+        q = deque()
+        q.append((amount, 0))
+        seen = set([amount])
+
+        while q:
+            a, n = q.popleft()
+
+            for c in coins:
+                if a - c > 0 and a - c not in seen:
+                    q.append((a - c, n + 1))
+                    seen.add(a - c)
+                elif a - c == 0:
+                    return n + 1
+
+        return -1
+```
