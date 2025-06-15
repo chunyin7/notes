@@ -103,7 +103,7 @@ int main(void) {
 ## epoll
 
 with an **epoll** instance, we can register various file descriptors (sockets, pipes, etc) via the kernel
-we can call `epoll_wait()`, which **blocks** until *any of the registered descriptors is ready, giving a list of 'ready' descriptors we can read/write without blocking
+we can call `epoll_wait()`, which **blocks** until *any* of the registered descriptors is ready, giving a list of 'ready' descriptors we can read/write without blocking
 
 this simplifies instances where we want to wait for several different events, using a single loop, while being highly scalable
 however, there is slight latency (usually negligible), and we are required to open descriptors in non-blocking mode and loop until they are drained

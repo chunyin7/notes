@@ -228,6 +228,13 @@ void thread_handler(void *arg) {
 }
 ```
 
+instead of `PTHREAD_MUTEX_INITIALIZER`, we can also use `pthread_mutex_init()`
+- this allows for custom attributes to be set
+- also returns an error code (`!= 0`) on failure
+- and requires a call to `pthread_mutex_destroy()` to free the mutex
+
+this is used for heap/stack mutexes rather than in global/static memory
+
 #### deadlocks
 
 a deadlock is a situation in which 2 or more threads are stuck waiting trying to access a shared resource held by another, creating a cyclic dependency
@@ -235,9 +242,13 @@ a deadlock is a situation in which 2 or more threads are stuck waiting trying to
 a deadlock requires:
 
 - a hold and wait
+    - a process must be holding some resource while waiting for another
 - a mutual exclusion
+    - there must be some resource held in a non-sharable mode
 - a circular wait
+    - there must be a circular chain of 2 or more processes, each holding some resource(s) and waiting for others
 - no pre-emption
+    - resources held by a process must be let go by the same process
 
 this is especially prone to happen as we cannot determine the execution order of threads
 
